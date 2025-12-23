@@ -32,6 +32,45 @@ namespace StarForce
 
         private MyAircraft m_MyAircraft = null;
 
+        // 游戏数据收集字段
+        private int m_Score = 0;
+        private int m_KillCount = 0;
+        private float m_SurvivalTime = 0f;
+        private int m_CurrentCombo = 0;
+        private int m_MaxCombo = 0;
+
+        /// <summary>
+        /// 获取当前分数。
+        /// </summary>
+        public int Score
+        {
+            get { return m_Score; }
+        }
+
+        /// <summary>
+        /// 获取击杀数量。
+        /// </summary>
+        public int KillCount
+        {
+            get { return m_KillCount; }
+        }
+
+        /// <summary>
+        /// 获取存活时间。
+        /// </summary>
+        public float SurvivalTime
+        {
+            get { return m_SurvivalTime; }
+        }
+
+        /// <summary>
+        /// 获取最大连击数。
+        /// </summary>
+        public int MaxCombo
+        {
+            get { return m_MaxCombo; }
+        }
+
         public virtual void Initialize()
         {
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
@@ -68,6 +107,49 @@ namespace StarForce
                 GameOver = true;
                 return;
             }
+
+            // 累加存活时间
+            if (!GameOver)
+            {
+                m_SurvivalTime += elapseSeconds;
+            }
+        }
+
+        /// <summary>
+        /// 增加分数。
+        /// </summary>
+        public void AddScore(int score)
+        {
+            m_Score += score;
+        }
+
+        /// <summary>
+        /// 增加击杀数。
+        /// </summary>
+        public void AddKill()
+        {
+            m_KillCount++;
+            m_CurrentCombo++;
+            if (m_CurrentCombo > m_MaxCombo)
+            {
+                m_MaxCombo = m_CurrentCombo;
+            }
+        }
+
+        /// <summary>
+        /// 重置连击。
+        /// </summary>
+        public void ResetCombo()
+        {
+            m_CurrentCombo = 0;
+        }
+
+        /// <summary>
+        /// 获取游戏结算数据。
+        /// </summary>
+        public GameSettlementData GetSettlementData()
+        {
+            return new GameSettlementData(m_Score, m_KillCount, m_SurvivalTime, m_MaxCombo);
         }
 
         protected virtual void OnShowEntitySuccess(object sender, GameEventArgs e)

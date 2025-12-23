@@ -86,5 +86,20 @@ namespace StarForce
                 Mathf.Clamp(CachedTransform.localPosition.z + speed.z, m_PlayerMoveBoundary.yMin, m_PlayerMoveBoundary.yMax)
             );
         }
+
+        /// <summary>
+        /// 应用伤害（重写以重置连击）。
+        /// </summary>
+        public new void ApplyDamage(Entity attacker, int damageHP)
+        {
+            base.ApplyDamage(attacker, damageHP);
+
+            // 修改：玩家受伤时重置连击
+            GameBase currentGame = ProcedureMain.CurrentGame;
+            if (currentGame != null)
+            {
+                currentGame.ResetCombo();
+            }
+        }
     }
 }

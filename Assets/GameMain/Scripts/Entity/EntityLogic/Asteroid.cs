@@ -63,6 +63,14 @@ namespace StarForce
         {
             base.OnDead(attacker);
 
+            // 修改：记录击杀数据
+            GameBase currentGame = ProcedureMain.CurrentGame;
+            if (currentGame != null)
+            {
+                currentGame.AddScore(100);  // 每击杀一个小行星加100分
+                currentGame.AddKill();      // 增加击杀数
+            }
+
             GameEntry.Entity.ShowEffect(new EffectData(GameEntry.Entity.GenerateSerialId(), m_AsteroidData.DeadEffectId)
             {
                 Position = CachedTransform.localPosition,

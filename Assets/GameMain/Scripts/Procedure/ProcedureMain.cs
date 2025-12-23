@@ -5,7 +5,9 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using GameFramework;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
@@ -19,6 +21,15 @@ namespace StarForce
         private GameBase m_CurrentGame = null;
         private bool m_GotoMenu = false;
         private float m_GotoMenuDelaySeconds = 0f;
+
+        /// <summary>
+        /// 获取当前游戏实例。
+        /// </summary>
+        public static GameBase CurrentGame
+        {
+            get;
+            private set;
+        }
 
         public override bool UseNativeDialog
         {
@@ -54,6 +65,7 @@ namespace StarForce
             m_GotoMenu = false;
             GameMode gameMode = (GameMode)procedureOwner.GetData<VarByte>("GameMode").Value;
             m_CurrentGame = m_Games[gameMode];
+            CurrentGame = m_CurrentGame; // 设置静态引用
             m_CurrentGame.Initialize();
         }
 
@@ -64,6 +76,8 @@ namespace StarForce
                 m_CurrentGame.Shutdown();
                 m_CurrentGame = null;
             }
+
+            CurrentGame = null; // 清除静态引用
 
             base.OnLeave(procedureOwner, isShutdown);
         }
@@ -87,8 +101,24 @@ namespace StarForce
             m_GotoMenuDelaySeconds += elapseSeconds;
             if (m_GotoMenuDelaySeconds >= GameOverDelayedSeconds)
             {
-                procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
-                ChangeState<ProcedureChangeScene>(procedureOwner);
+                // 修改：获取游戏结算数据并切换到结算流程
+                if (m_CurrentGame != null)
+                {
+                    GameSettlementData settlementData = m_CurrentGame.GetSettlementData();
+                    
+                    // 从引用池获取 VarObject 实例并设置值
+                    VarObject varObject = ReferencePool.Acquire<VarObject>();
+                    varObject.Value = settlementData;
+                    procedureOwner.SetData<VarObject>("SettlementData", varObject);
+                    
+                    ChangeState<ProcedureSettlement>(procedureOwner);
+                }
+                else
+                {
+                    // 如果没有游戏实例，直接返回菜单
+                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
+                    ChangeState<ProcedureChangeScene>(procedureOwner);
+                }
             }
         }
     }

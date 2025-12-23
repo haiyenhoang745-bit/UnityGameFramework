@@ -25,5 +25,7 @@
     <String Key="Setting.UISound" Value="UI Sound FX" />
     <String Key="Setting.Language" Value="Language" />
     <String Key="Setting.LanguageTips" Value="Language change demands restarting." />
+    <String Key="Settlement.Title" Value="GAME SETTLEMENT" />
+    <String Key="Settlement.BackToMenuButton" Value="BACK TO MENU" />
   </Dictionary>
 </Dictionaries>
