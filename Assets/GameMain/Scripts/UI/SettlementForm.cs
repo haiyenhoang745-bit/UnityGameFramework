@@ -34,11 +34,7 @@ namespace StarForce
 
         private ProcedureSettlement m_ProcedureSettlement = null;
 
-#if UNITY_2017_3_OR_NEWER
         protected override void OnInit(object userData)
-#else
-        protected internal override void OnInit(object userData)
-#endif
         {
             base.OnInit(userData);
 
@@ -49,11 +45,7 @@ namespace StarForce
             }
         }
 
-#if UNITY_2017_3_OR_NEWER
         protected override void OnOpen(object userData)
-#else
-        protected internal override void OnOpen(object userData)
-#endif
         {
             base.OnOpen(userData);
 
@@ -95,11 +87,7 @@ namespace StarForce
             }
         }
 
-#if UNITY_2017_3_OR_NEWER
         protected override void OnClose(bool isShutdown, object userData)
-#else
-        protected internal override void OnClose(bool isShutdown, object userData)
-#endif
         {
             m_ProcedureSettlement = null;
             base.OnClose(isShutdown, userData);

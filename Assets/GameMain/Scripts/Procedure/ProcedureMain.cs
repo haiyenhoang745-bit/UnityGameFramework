@@ -105,17 +105,18 @@ namespace StarForce
                 if (m_CurrentGame != null)
                 {
                     GameSettlementData settlementData = m_CurrentGame.GetSettlementData();
-                    
                     // 从引用池获取 VarObject 实例并设置值
                     VarObject varObject = ReferencePool.Acquire<VarObject>();
                     varObject.Value = settlementData;
+                    // 将数据存入 FSM
+                    //参数1：有限状态机数据名称。 参数2：有限状态机的数据
                     procedureOwner.SetData<VarObject>("SettlementData", varObject);
-                    
+                    // 切换到结算流程
                     ChangeState<ProcedureSettlement>(procedureOwner);
                 }
                 else
                 {
-                    // 如果没有游戏实例，直接返回菜单
+                    // 原本代码：如果没有游戏实例，直接返回菜单
                     procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
                     ChangeState<ProcedureChangeScene>(procedureOwner);
                 }
