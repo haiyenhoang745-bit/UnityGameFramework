@@ -16,7 +16,7 @@ namespace StarForce
     public class ProcedureMain : ProcedureBase
     {
         private const float GameOverDelayedSeconds = 2f;
-
+        //管理游戏实例，例如 oninit -> m_Games.Add(GameMode.Survival, new SurvivalGame());
         private readonly Dictionary<GameMode, GameBase> m_Games = new Dictionary<GameMode, GameBase>();
         private GameBase m_CurrentGame = null;
         private bool m_GotoMenu = false;

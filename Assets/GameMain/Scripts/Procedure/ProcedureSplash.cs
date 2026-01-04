@@ -36,13 +36,15 @@ namespace StarForce
             }
             else if (GameEntry.Resource.ResourceMode == ResourceMode.Package)
             {
-                // 单机模式
+                // 单机模式 然后就预加载
                 Log.Info("Package resource mode detected.");
                 ChangeState<ProcedureInitResources>(procedureOwner);
             }
             else
             {
                 // 可更新模式
+                // 1、需要更新： 更新列表+验证资源+更新资源
+                // 2、不需要更新： 验证资源+更新资源
                 Log.Info("Updatable resource mode detected.");
                 ChangeState<ProcedureCheckVersion>(procedureOwner);
             }
