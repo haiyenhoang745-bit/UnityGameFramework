@@ -23,6 +23,7 @@ namespace UnityGameFramework.Runtime
     {
         private IProcedureManager m_ProcedureManager = null;
         private ProcedureBase m_EntranceProcedure = null;
+        private bool m_Initialized = false;
 
         [SerializeField]
         private string[] m_AvailableProcedureTypeNames = null;
@@ -37,7 +38,22 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
+                if (!m_Initialized)
+                {
+                    return null;
+                }
                 return m_ProcedureManager.CurrentProcedure;
+            }
+        }
+
+        /// <summary>
+        /// 获取流程组件是否已初始化。
+        /// </summary>
+        public bool IsInitialized
+        {
+            get
+            {
+                return m_Initialized;
             }
         }
 
@@ -101,6 +117,8 @@ namespace UnityGameFramework.Runtime
             m_ProcedureManager.Initialize(GameFrameworkEntry.GetModule<IFsmManager>(), procedures);
 
             yield return new WaitForEndOfFrame();
+
+            m_Initialized = true;
 
             m_ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());
         }
